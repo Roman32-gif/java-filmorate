@@ -81,7 +81,7 @@ public class UserController {
     }
 
     private void validate(User user) {
-        if(user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
+        if (user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ConditionsNotMetException("Email должен быть обязательно правильно указан");
         }
 
