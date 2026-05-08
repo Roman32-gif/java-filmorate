@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 @RestController
 @RequestMapping("/users")
 public class UserController {
-
     private static final Logger userLog = LoggerFactory.getLogger(UserController.class);
     private final Map<Long, User> userMap = new HashMap<>();
     private long currentMaxId = 0;
@@ -35,7 +34,6 @@ public class UserController {
             userLog.warn("Введены невалидные данные при создании пользователя");
             throw c;
         }
-
 
         for (User foundUser : userMap.values()) {
             if (user.getEmail().equals(foundUser.getEmail())) {
@@ -70,7 +68,6 @@ public class UserController {
             throw c;
         }
 
-
         for (User foundUser : userMap.values()) {
             if (user.getEmail().equals(foundUser.getEmail())  && !foundUser.getId().equals(user.getId())) {
                 userLog.error("Не получилось обновить данные пользователя, пользователь с данной почтой уже существует: {}", user.getEmail());
@@ -84,7 +81,6 @@ public class UserController {
     }
 
     private void validate(User user) {
-
         if(user.getEmail() == null || user.getEmail().isBlank() || !user.getEmail().contains("@")) {
             throw new ConditionsNotMetException("Email должен быть обязательно правильно указан");
         }

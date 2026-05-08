@@ -13,7 +13,6 @@ import org.slf4j.Logger;
 @RestController
 @RequestMapping("/films")
 public class FilmController {
-
     private static final Logger filmLog = LoggerFactory.getLogger(FilmController.class);
     private final Map<Long, Film> filmMap = new HashMap<>();
     private long currentMaxId = 0;
@@ -66,7 +65,6 @@ public class FilmController {
     }
 
     private void validate(Film film) {
-
         if (film.getName() == null || film.getName().isBlank()) {
             throw new ConditionsNotMetException("Название не может быть пустым");
         }
