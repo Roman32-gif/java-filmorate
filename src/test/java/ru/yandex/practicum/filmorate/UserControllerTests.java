@@ -45,8 +45,8 @@ public class UserControllerTests {
      }
 
     @DisplayName("Ввод поля почты без знака @: ошибка при создании нового пользователя")
-     @Test
-     public void createNewUserWithInvalidEmail() {
+    @Test
+    public void createNewUserWithInvalidEmail() {
         User user = User.builder()
                  .email("Creativeyandex.ru")
                  .login("bro")
@@ -105,7 +105,7 @@ public class UserControllerTests {
          assertThrows(ConditionsNotMetException.class, () -> userController.createUser(user), "Дата рождения пользователя не может быть в будущем");
     }
 
- @DisplayName("Ввод всех валидных данных: успешное обновление данных пользователя")
+    @DisplayName("Ввод всех валидных данных: успешное обновление данных пользователя")
     @Test
     public void updateUser() {
             User user = User.builder()
@@ -122,7 +122,7 @@ public class UserControllerTests {
          assertEquals(newUser.getId(), updatedUser.getId());
     }
 
- @DisplayName("Ввод уже существующей почты: ошибка при обновлении данных пользоователя")
+    @DisplayName("Ввод уже существующей почты: ошибка при обновлении данных пользоователя")
     @Test
     public void updateUserWithExistingEmail() {
         User user1 = User.builder()
