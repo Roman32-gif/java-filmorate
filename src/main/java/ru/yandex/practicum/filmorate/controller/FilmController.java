@@ -16,23 +16,18 @@ public class FilmController {
     private static final Logger filmLog = LoggerFactory.getLogger(FilmController.class);
     private final Map<Long, Film> filmMap = new HashMap<>();
     private long currentMaxId = 0;
+    private static final LocalDate LIMITATION_DAY = LocalDate.of(1895, 12, 28);
 
     @GetMapping
     public Collection<Film> allFilms() {
+        filmLog.debug("Вывод всех добавленных фильмов");
         return filmMap.values();
     }
 
     @PostMapping
     public Film createFilm(@RequestBody Film film) {
         filmLog.debug("Начало добавления нового фильма");
-
-        try {
-            validate(film);
-        } catch (ConditionsNotMetException c) {
-            filmLog.warn("Введены невалидные данные при добавлении новго фильма");
-            throw c;
-        }
-
+        validate(film);
         film.setId(getNextId());
         filmMap.put(film.getId(), film);
         filmLog.info("Новый фильм успешно добавлен");
@@ -47,18 +42,12 @@ public class FilmController {
     public Film updateFilm(@RequestBody Film film) {
         filmLog.debug("Начало изменения данных уже существующего фильма");
 
-        if (filmMap.get(film.getId()) == null) {
+        if (!filmMap.containsKey(film.getId())) {
             filmLog.error("Ошибка при обновлении данных фильма, фильма с таким id нет: {}", film.getId());
             throw new NotFoundException("Нет фильма с таким id");
         }
 
-        try {
-            validate(film);
-        } catch (ConditionsNotMetException c) {
-            filmLog.warn("Введены невалидные данные для обновления информации о фильме");
-            throw c;
-        }
-
+        validate(film);
         filmMap.put(film.getId(), film);
         filmLog.info("Данные фильма успешно обновлены");
         return film;
@@ -66,18 +55,22 @@ public class FilmController {
 
     private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
+            filmLog.warn("Введено пустое имя фильма");
             throw new ConditionsNotMetException("Название не может быть пустым");
         }
 
-        if (film.getDescription() == null || film.getDescription().length() > 200) {
+        if (film.getDescription() != null && film.getDescription().length() > 200) {
+            filmLog.warn("Описание фильма слишком длинное");
             throw new ConditionsNotMetException("Описание не может быть больше 200 символов");
         }
 
-        if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(LocalDate.of(1895, 12, 28))) {
+        if (film.getReleaseDate() == null || film.getReleaseDate().isBefore(LIMITATION_DAY)) {
+            filmLog.warn("Указана некорректная дата релиза фильма: {}", film.getReleaseDate());
             throw new ConditionsNotMetException("Дата релиза фильма не может быть раньше 28.12.1895");
         }
 
         if (film.getDuration() <= 0) {
+            filmLog.warn("Продолжительно фильма не может быть отрицательным числом: {}", film.getDuration());
             throw new ConditionsNotMetException("Продолжительность фильма не может быть отрицательным числом");
         }
     }
