@@ -14,7 +14,7 @@ public class ErrorHandler {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public Map<String, String> handleValidationException(final ConditionsNotMetException e){
+    public Map<String, String> handleValidationException(final ConditionsNotMetException e) {
         return Map.of("error", "Ошибка валидации","message", e.getMessage());
     }
 
