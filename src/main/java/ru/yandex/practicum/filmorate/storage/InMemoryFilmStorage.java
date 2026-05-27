@@ -61,7 +61,6 @@ public class InMemoryFilmStorage implements FilmStorage {
         return film;
     }
 
-
     private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             filmLog.warn("Введено пустое имя фильма");
@@ -83,6 +82,4 @@ public class InMemoryFilmStorage implements FilmStorage {
             throw new ConditionsNotMetException("Продолжительность фильма не может быть отрицательным числом");
         }
     }
-
-
 }
