@@ -28,8 +28,7 @@ public class InMemoryUserStorage implements UserStorage {
         userLog.debug("Проверка на наличие такого пользователя");
         if (userMap.containsKey(userId)) {
             return userMap.get(userId);
-        }
-        else {
+        } else {
             userLog.error("Не удалось получить данные пользователя, пользователь с данным id не существует: {}", userId);
             throw new NotFoundException("Нет такого пользователя с таким id");
         }
@@ -54,7 +53,7 @@ public class InMemoryUserStorage implements UserStorage {
         return ++currentMaxId;
     }
 
-    public User updateUser( User user) {
+    public User updateUser(User user) {
         userLog.debug("Начало измененения данных существующего пользователя");
 
         if (!userMap.containsKey(user.getId())) {
