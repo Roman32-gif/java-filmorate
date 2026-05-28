@@ -39,6 +39,8 @@ public class UserService {
         userLog.info("Добавление пользователя в друзья");
         user.getFriends().add(friendId);
         friend.getFriends().add(userId);
+        userStorage.updateUser(user);
+        userStorage.updateUser(friend);
     }
 
     public void deleteFriend(Long userId, Long friendId) {
@@ -59,6 +61,8 @@ public class UserService {
         userLog.info("Удаление пользователя из друзей");
         user.getFriends().remove(friendId);
         friend.getFriends().remove(userId);
+        userStorage.updateUser(user);
+        userStorage.updateUser(friend);
     }
 
     public List<User> showSameFriends(Long userId, Long friendId) {
