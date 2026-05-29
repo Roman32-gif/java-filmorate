@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ConditionsNotMetException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
@@ -79,7 +80,7 @@ public class FilmService {
         return userStorage.getUserById(userId)
                 .orElseThrow(() -> {
                     filmLog.error("Пользователь с id {} не существует", userId);
-                    return new ConditionsNotMetException("Такого пользователя нет");
+                    return new NotFoundException("Такого пользователя нет");
                 });
     }
 
@@ -87,7 +88,7 @@ public class FilmService {
         return filmStorage.getFilmById(filmId)
                 .orElseThrow(() -> {
                     filmLog.error("Фильм с id {} не существует", filmId);
-                    return new ConditionsNotMetException("Фильма с таким id нет");
+                    return new NotFoundException("Фильма с таким id нет");
                 });
     }
 

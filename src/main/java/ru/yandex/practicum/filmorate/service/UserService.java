@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
+import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.time.LocalDate;
@@ -104,7 +105,7 @@ public class UserService {
         return userStorage.getUserById(userId)
                 .orElseThrow(() -> {
                     userLog.error("Пользователь с id {} не существует", userId);
-                    return new ConditionsNotMetException("Такого пользователя нет");
+                    return new NotFoundException("Такого пользователя нет");
                 });
     }
 
