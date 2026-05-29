@@ -75,7 +75,7 @@ public class FilmService {
         return filmStorage.updateFilm(film);
     }
 
-    private User getUserOrThrow(Long userId){
+    private User getUserOrThrow(Long userId) {
         return userStorage.getUserById(userId)
                 .orElseThrow(() -> {
                     filmLog.error("Пользователь с id {} не существует", userId);
@@ -108,7 +108,7 @@ public class FilmService {
         }
 
         if (film.getDuration() <= 0) {
-            filmLog.warn("Продолжительно фильма не может быть отрицательным числом: {}", film.getDuration());
+            filmLog.warn("Продолжительность фильма не может быть отрицательным числом: {}", film.getDuration());
             throw new ConditionsNotMetException("Продолжительность фильма не может быть отрицательным числом");
         }
     }
