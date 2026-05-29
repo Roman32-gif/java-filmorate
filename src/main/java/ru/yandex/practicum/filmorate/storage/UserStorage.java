@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
+import java.util.Optional;
 
 public interface UserStorage {
     Collection<User> allUsers();
@@ -10,5 +11,5 @@ public interface UserStorage {
 
     User updateUser(User user);
 
-    User getUserById(Long userId);
+    Optional <User> getUserById(Long userId);
 }
