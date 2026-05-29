@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate.storage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.filmorate.exceptions.DuplicatedDataException;
 import ru.yandex.practicum.filmorate.model.User;
 import java.util.Collection;
 import java.util.HashMap;
@@ -34,7 +33,6 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User createUser(User user) {
         userLog.debug("Начало создания нового пользователя");
-        checkTheSameEmail(user);
         user.setId(getNextId());
         userMap.put(user.getId(), user);
         userLog.info("Успешное создание нового пользователя: {}", user.getId());
@@ -47,21 +45,8 @@ public class InMemoryUserStorage implements UserStorage {
 
     public User updateUser(User user) {
         userLog.debug("Начало измененения данных существующего пользователя");
-
-        checkTheSameEmail(user);
         userLog.info("Обновление данных существующего пользователя");
         userMap.put(user.getId(), user);
         return user;
-    }
-
-    private void checkTheSameEmail(User user) {
-        for (User foundUser : userMap.values()) {
-            if (user.getEmail().equals(foundUser.getEmail())) {
-                if (!foundUser.getId().equals(user.getId())) {
-                    userLog.error("Не получилось обновить данные пользователя, пользователь с данной почтой уже существует: {}", user.getEmail());
-                    throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
-                }
-            }
-        }
     }
 }

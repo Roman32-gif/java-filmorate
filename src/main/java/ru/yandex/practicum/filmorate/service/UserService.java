@@ -48,7 +48,7 @@ public class UserService {
         }
 
         User user = getUserOrThrow(userId);
-        User friend =getUserOrThrow(friendId);
+        User friend = getUserOrThrow(friendId);
 
         userLog.info("Удаление пользователя из друзей");
         user.getFriends().remove(friendId);
@@ -89,12 +89,14 @@ public class UserService {
 
     public User createUser(User user) {
         validate(user);
+        checkTheSameEmail(user);
         return userStorage.createUser(user);
     }
 
     public User updateUser(User user) {
         validate(user);
         getUserOrThrow(user.getId());
+        checkTheSameEmail(user);
         return userStorage.updateUser(user);
     }
 
@@ -124,6 +126,17 @@ public class UserService {
 
         if (user.getName() == null || user.getName().isBlank()) {
             user.setName(user.getLogin());
+        }
+    }
+
+    private void checkTheSameEmail(User user) {
+        for (User foundUser : userStorage.allUsers()) {
+            if (user.getEmail().equals(foundUser.getEmail())) {
+                if (!foundUser.getId().equals(user.getId())) {
+                    userLog.error("Не получилось обновить данные пользователя, пользователь с данной почтой уже существует: {}", user.getEmail());
+                    throw new DuplicatedDataException("Пользователь с такой почтой уже существует");
+                }
+            }
         }
     }
 }
