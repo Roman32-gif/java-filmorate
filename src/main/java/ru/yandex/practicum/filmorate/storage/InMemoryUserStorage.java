@@ -44,7 +44,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     public User updateUser(User user) {
-        userLog.debug("Начало измененения данных существующего пользователя");
+        userLog.debug("Начало изменения данных существующего пользователя");
         userLog.info("Обновление данных существующего пользователя");
         userMap.put(user.getId(), user);
         return user;

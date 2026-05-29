@@ -31,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     public Optional<Film> getFilmById(Long filmId) {
-        filmLog.debug("Получение id фильма");
+        filmLog.debug("Получение фильма по id: {}", filmId);
         return Optional.ofNullable(filmMap.get(filmId));
     }
 
