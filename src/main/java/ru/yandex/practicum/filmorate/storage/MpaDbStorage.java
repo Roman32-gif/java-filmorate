@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository("MpaDbStorage")
-public class MpaDbStorage implements MpaStorage{
+public class MpaDbStorage implements MpaStorage {
     private final JdbcTemplate jdbcTemplate;
 
     public MpaDbStorage(JdbcTemplate jdbcTemplate) {
