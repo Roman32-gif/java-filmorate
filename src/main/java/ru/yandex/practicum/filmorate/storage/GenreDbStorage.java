@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Repository("GenreDbStorage")
-public class GenreDbStorage implements GenreStorage{
+public class GenreDbStorage implements GenreStorage {
     private final JdbcTemplate jdbcTemplate;
 
     public GenreDbStorage(JdbcTemplate jdbcTemplate) {

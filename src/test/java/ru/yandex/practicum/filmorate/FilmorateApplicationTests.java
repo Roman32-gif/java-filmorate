@@ -114,7 +114,6 @@ class FilmorateApplicationTests {
 		film.setDescription("test");
 		film.setReleaseDate(LocalDate.of(1990, 1, 20));
 		film.setDuration(120);
-		film.setMpaId(1L);
 		filmDbStorage.createFilm(film);
 		Collection<Film> films = filmDbStorage.allFilms();
 		assertThat(films)
@@ -133,7 +132,6 @@ class FilmorateApplicationTests {
 		film.setDescription("test");
 		film.setReleaseDate(LocalDate.of(1990, 1, 20));
 		film.setDuration(120);
-		film.setMpaId(1L);
 		filmDbStorage.createFilm(film);
 
 		Optional<Film> filmOptional = filmDbStorage.getFilmById(film.getId());
@@ -153,13 +151,11 @@ class FilmorateApplicationTests {
 		film.setDescription("test");
 		film.setReleaseDate(LocalDate.of(1990, 1, 20));
 		film.setDuration(120);
-		film.setMpaId(1L);
 		Film film2 = new Film();
 		film2.setName("test2");
 		film2.setDescription("test2");
 		film2.setReleaseDate(LocalDate.of(2000, 1, 20));
 		film2.setDuration(150);
-		film2.setMpaId(1L);
 
 		filmDbStorage.createFilm(film);
 		filmDbStorage.createFilm(film2);
@@ -179,7 +175,6 @@ class FilmorateApplicationTests {
 		film.setDescription("test");
 		film.setReleaseDate(LocalDate.of(1990, 1, 20));
 		film.setDuration(120);
-		film.setMpaId(1L);
 		Film newFilm = filmDbStorage.createFilm(film);
 		newFilm.setName("test2");
 		newFilm.setDescription("test2");
