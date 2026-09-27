@@ -3,12 +3,17 @@ package ru.yandex.practicum.filmorate.service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.exceptions.ConditionsNotMetException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.Mpa;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
+import ru.yandex.practicum.filmorate.storage.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.MpaStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -22,29 +27,33 @@ public class FilmService {
     private final UserStorage userStorage;
     private static final Logger filmLog = LoggerFactory.getLogger(FilmService.class);
     private static final LocalDate LIMITATION_DAY = LocalDate.of(1895, 12, 28);
+    private final GenreStorage genreStorage;
+    private final MpaStorage mpaStorage;
 
     @Autowired
-    public FilmService(FilmStorage filmStorage, UserStorage userStorage) {
+    public FilmService(@Qualifier("FilmDbStorage") FilmStorage filmStorage, @Qualifier("UserDbStorage") UserStorage userStorage, @Qualifier("GenreDbStorage") GenreStorage genreStorage, @Qualifier("MpaDbStorage") MpaStorage mpaStorage) {
         this.filmStorage = filmStorage;
         this.userStorage = userStorage;
+        this.genreStorage = genreStorage;
+        this.mpaStorage = mpaStorage;
     }
 
     public void addLikeOnVideo(Long filmId, Long userId) {
         filmLog.debug("Добавление лайка");
 
-        Film film = getFilmOrThrow(filmId);
+        getFilmOrThrow(filmId);
         getUserOrThrow(userId);
         filmLog.info("Добавление лайка");
-        film.getLikes().add(userId);
+        filmStorage.addLike(filmId, userId);
     }
 
     public void deleteLikeFromVideo(Long filmId, Long userId) {
         filmLog.debug("Удаление лайка с видео");
 
-        Film film = getFilmOrThrow(filmId);
+        getFilmOrThrow(filmId);
         getUserOrThrow(userId);
         filmLog.info("Удаление лайка с видео");
-        film.getLikes().remove(userId);
+        filmStorage.deleteLike(filmId, userId);
     }
 
     public List<Film> show10MostPopularFilmsByLikes(int count) {
@@ -92,6 +101,10 @@ public class FilmService {
                 });
     }
 
+    public Film getFilmById(Long filmId) {
+        return getFilmOrThrow(filmId);
+    }
+
     private void validate(Film film) {
         if (film.getName() == null || film.getName().isBlank()) {
             filmLog.warn("Введено пустое имя фильма");
@@ -112,5 +125,59 @@ public class FilmService {
             filmLog.warn("Продолжительность фильма не может быть отрицательным числом: {}", film.getDuration());
             throw new ConditionsNotMetException("Продолжительность фильма не может быть отрицательным числом");
         }
+
+        validateGenres(film);
+        validateMpa(film);
+    }
+
+
+    private void validateMpa(Film film) {
+
+        Mpa mpa = film.getMpa();
+
+        if (mpa == null) {
+            return;
+        }
+
+        if (mpaStorage.getMpaById(mpa.getId()).isEmpty()) {
+            filmLog.warn(
+                    "Указан некорректный рейтинг MPA: {}",
+                    mpa.getId()
+            );
+
+            throw new NotFoundException(
+                    "Рейтинг MPA с таким id не существует"
+            );
+        }
+    }
+
+    private void validateGenres(Film film) {
+
+        if (film.getGenres() == null) {
+            return;
+        }
+
+        for (Genre genre : film.getGenres()) {
+
+            if (genre == null) {
+                filmLog.warn("Указан некорректный жанр");
+
+                throw new NotFoundException(
+                        "Указан некорректный жанр"
+                );
+            }
+
+            if (genreStorage.getGenreById(genre.getId()).isEmpty()) {
+                filmLog.warn(
+                        "Указан некорректный жанр: {}",
+                        genre.getId()
+                );
+
+                throw new NotFoundException(
+                        "Жанр с таким id не существует"
+                );
+            }
+        }
     }
 }
+

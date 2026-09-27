@@ -3,25 +3,27 @@ package ru.yandex.practicum.filmorate;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.jdbc.core.JdbcTemplate;
 import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.exceptions.*;
 import ru.yandex.practicum.filmorate.service.FilmService;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryFilmStorage;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.*;
+
 import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilmControllerTests {
     private static FilmController filmController;
+    private final JdbcTemplate jdbcTemplate = new JdbcTemplate();
 
     @BeforeEach
     public void setUp() {
         FilmStorage filmStorage = new InMemoryFilmStorage();
         UserStorage userStorage = new InMemoryUserStorage();
-        FilmService filmService = new FilmService(filmStorage, userStorage);
+        GenreStorage genreStorage = new GenreDbStorage(jdbcTemplate);
+        MpaStorage mpaStorage = new MpaDbStorage(jdbcTemplate);
+        FilmService filmService = new FilmService(filmStorage, userStorage, genreStorage, mpaStorage);
         filmController = new FilmController(filmService);
     }
 

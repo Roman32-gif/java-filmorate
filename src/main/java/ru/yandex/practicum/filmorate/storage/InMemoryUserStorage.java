@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+@Component("InMemoryUserStorage")
 public class InMemoryUserStorage implements UserStorage {
 
     private static final Logger userLog = LoggerFactory.getLogger(InMemoryUserStorage.class);
@@ -24,6 +24,16 @@ public class InMemoryUserStorage implements UserStorage {
     public Optional<User> getUserById(Long userId) {
         userLog.debug("Проверка на наличие такого пользователя");
         return Optional.ofNullable(userMap.get(userId));
+    }
+
+    @Override
+    public void addFriend(Long userId, Long friendId) {
+
+    }
+
+    @Override
+    public void deleteFriend(Long userId, Long friendId) {
+
     }
 
     public void deleteFriendById(Long friendId) {

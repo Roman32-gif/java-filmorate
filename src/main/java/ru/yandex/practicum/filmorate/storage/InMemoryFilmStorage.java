@@ -9,7 +9,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
+@Component("InMemoryFilmStorage")
 public class InMemoryFilmStorage implements FilmStorage {
 
     private static final Logger filmLog = LoggerFactory.getLogger(InMemoryFilmStorage.class);
@@ -33,6 +33,16 @@ public class InMemoryFilmStorage implements FilmStorage {
     public Optional<Film> getFilmById(Long filmId) {
         filmLog.debug("Получение фильма по id: {}", filmId);
         return Optional.ofNullable(filmMap.get(filmId));
+    }
+
+    @Override
+    public void addLike(Long filmId, Long userId) {
+
+    }
+
+    @Override
+    public void deleteLike(Long filmId, Long userId) {
+
     }
 
     private long getNextId() {
