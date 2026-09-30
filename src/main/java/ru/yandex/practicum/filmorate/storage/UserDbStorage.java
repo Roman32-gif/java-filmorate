@@ -6,7 +6,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.sql.*;
 import java.sql.Date;
 import java.util.*;
-
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 

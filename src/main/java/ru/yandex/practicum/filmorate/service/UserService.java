@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 import java.time.LocalDate;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -57,8 +56,8 @@ public class UserService {
     public List<User> showSameFriends(Long userId, Long friendId) {
         userLog.debug("Вывод одинаковых друзей");
 
-        User user = getUserOrThrow(userId);
-        User friend = getUserOrThrow(friendId);
+        getUserOrThrow(userId);
+        getUserOrThrow(friendId);
         userLog.info("Вывод общих друзей");
 
         return userStorage.getCommonFriends(userId, friendId);
