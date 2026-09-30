@@ -4,10 +4,9 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.User;
 import java.sql.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.sql.Date;
+import java.util.*;
+
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 
@@ -73,6 +72,37 @@ public class UserDbStorage implements UserStorage {
         jdbcTemplate.update("DELETE FROM user_friends WHERE user_id = ? AND friend_id = ?", userId, friendId);
     }
 
+    @Override
+    public List<User> getFriends(Long userId) {
+        return jdbcTemplate.query(
+                """
+                SELECT u.*
+                FROM users u
+                JOIN user_friends uf ON u.id = uf.friend_id
+                WHERE uf.user_id = ?
+                """,
+                (rs, rowNum) -> mappingUser(rs),
+                userId
+        );
+    }
+
+    @Override
+    public List<User> getCommonFriends(Long userId, Long otherId) {
+        return jdbcTemplate.query(
+                """
+                SELECT u.*
+                FROM users u
+                JOIN user_friends uf1 ON u.id = uf1.friend_id
+                JOIN user_friends uf2 ON u.id = uf2.friend_id
+                WHERE uf1.user_id = ?
+                  AND uf2.user_id = ?
+                """,
+                (rs, rowNum) -> mappingUser(rs),
+                userId,
+                otherId
+        );
+    }
+
 
     private User mappingUser(ResultSet rs) throws SQLException {
         User user = new User();
@@ -81,19 +111,6 @@ public class UserDbStorage implements UserStorage {
         user.setLogin(rs.getString("login"));
         user.setName(rs.getString("name"));
         user.setBirthday(rs.getDate("birthday").toLocalDate());
-
-        Set<Long> friends = new HashSet<>();
-
-        jdbcTemplate.query(
-                "SELECT friend_id FROM user_friends WHERE user_id = ?",
-                (rs1, rowNum) -> {
-                    friends.add(rs1.getLong("friend_id"));
-                    return null;
-                },
-                user.getId()
-        );
-
-        user.setFriends(friends);
 
         return user;
     }

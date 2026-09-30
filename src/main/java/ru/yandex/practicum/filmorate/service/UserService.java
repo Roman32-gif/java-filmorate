@@ -61,23 +61,17 @@ public class UserService {
         User friend = getUserOrThrow(friendId);
         userLog.info("Вывод общих друзей");
 
-        return user.getFriends().stream()
-                .filter(friend.getFriends()::contains)
-                .map(userStorage::getUserById)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+        return userStorage.getCommonFriends(userId, friendId);
     }
 
     public List<User> showFriends(Long userId) {
         userLog.debug("Вывод друзей пользователя");
 
-        User user = getUserOrThrow(userId);
+        getUserOrThrow(userId);
+
         userLog.info("Вывод друзей");
 
-        return user.getFriends().stream()
-                .map(userStorage::getUserById)
-                .flatMap(Optional::stream)
-                .collect(Collectors.toList());
+        return userStorage.getFriends(userId);
     }
 
     public Collection<User> allUsers() {

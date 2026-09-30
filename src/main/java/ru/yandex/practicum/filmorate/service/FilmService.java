@@ -64,10 +64,7 @@ public class FilmService {
             throw new ConditionsNotMetException("Количество фильмов должно быть положительным числом");
         }
 
-        return filmStorage.allFilms().stream()
-                .sorted((f1, f2) -> Integer.compare(f2.getLikes().size(), f1.getLikes().size()))
-                .limit(count)
-                .collect(Collectors.toList());
+        return filmStorage.getMostPopularFilms(count);
     }
 
     public Collection<Film> allFilms() {
@@ -146,37 +143,25 @@ public class FilmService {
             );
 
             throw new NotFoundException(
-                    "Рейтинг MPA с таким id не существует"
+                    "Рейтинг MPA с id " + mpa.getId() + " не существует"
             );
         }
     }
 
     private void validateGenres(Film film) {
 
-        if (film.getGenres() == null) {
+        if (film.getGenres() == null || film.getGenres().isEmpty()) {
             return;
         }
 
-        for (Genre genre : film.getGenres()) {
+        List<Long> genreIds = film.getGenres().stream()
+                .map(Genre::getId)
+                .toList();
 
-            if (genre == null) {
-                filmLog.warn("Указан некорректный жанр");
+        Collection<Genre> genres = genreStorage.getGenresByIds(genreIds);
 
-                throw new NotFoundException(
-                        "Указан некорректный жанр"
-                );
-            }
-
-            if (genreStorage.getGenreById(genre.getId()).isEmpty()) {
-                filmLog.warn(
-                        "Указан некорректный жанр: {}",
-                        genre.getId()
-                );
-
-                throw new NotFoundException(
-                        "Жанр с таким id не существует"
-                );
-            }
+        if (genres.size() != genreIds.stream().distinct().count()) {
+            throw new NotFoundException("Указан некорректный жанр");
         }
     }
 }
