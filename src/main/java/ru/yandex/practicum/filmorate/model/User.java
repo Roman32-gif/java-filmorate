@@ -9,6 +9,7 @@ import java.util.Set;
 @Builder
 @EqualsAndHashCode(of = "email")
 @AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     private Long id;
